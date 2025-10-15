@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/custom_card.dart';
 import '../../../../core/models/user.dart';
 
-
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/services/mongodb_service.dart';
 import 'quick_db_test.dart';

@@ -834,8 +834,6 @@ class _AdminEventsScreenState extends State<AdminEventsScreen>
     );
   }
 
-
-
   void _editEvent(Event event) {
     Navigator.push(
       context,
