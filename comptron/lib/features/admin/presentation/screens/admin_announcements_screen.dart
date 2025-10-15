@@ -184,7 +184,7 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<AnnouncementPriority>(
-                  value: priority,
+                  initialValue: priority,
                   decoration: const InputDecoration(
                     labelText: 'Priority',
                     border: OutlineInputBorder(),

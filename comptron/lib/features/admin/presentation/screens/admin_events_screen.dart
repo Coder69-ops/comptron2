@@ -5,7 +5,7 @@ import '../../../../core/models/user.dart';
 import '../../../../core/models/event.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/services/mongodb_service.dart';
-import 'create_event_screen.dart';
+
 import 'edit_event_screen.dart';
 import 'event_details_screen.dart';
 import '../../../events/presentation/screens/admin_checkin_dashboard.dart';
@@ -233,7 +233,7 @@ class _AdminEventsScreenState extends State<AdminEventsScreen>
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<EventType>(
-                    value: eventType,
+                    initialValue: eventType,
                     decoration: const InputDecoration(
                       labelText: 'Event Type',
                       border: OutlineInputBorder(),
@@ -834,12 +834,7 @@ class _AdminEventsScreenState extends State<AdminEventsScreen>
     );
   }
 
-  void _createEvent() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const CreateEventScreen()),
-    ).then((_) => _loadEvents());
-  }
+
 
   void _editEvent(Event event) {
     Navigator.push(

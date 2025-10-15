@@ -232,7 +232,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
               // Event Type
               DropdownButtonFormField<EventType>(
-                value: _selectedType,
+                initialValue: _selectedType,
                 decoration: const InputDecoration(
                   labelText: 'Event Type*',
                   border: OutlineInputBorder(),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/custom_card.dart';
 import '../../../../core/models/user.dart';
-import '../../../../core/models/event.dart';
-import '../../../../core/models/announcement.dart';
+
+
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/services/mongodb_service.dart';
 import 'quick_db_test.dart';
@@ -30,8 +30,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _publishedAnnouncements = 0;
   int _totalResources = 0;
   int _activeUsers = 0;
-  List<Event> _recentEvents = [];
-  List<Announcement> _recentAnnouncements = [];
 
   @override
   void initState() {
@@ -72,8 +70,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       final allResources = await mongoService.getResources(limit: 100);
 
       // Get recent items for activity feed
-      final recentEvents = allEvents.take(5).toList();
-      final recentAnnouncements = allAnnouncements.take(5).toList();
+      // Statistics loaded successfully
 
       setState(() {
         _totalEvents = allEvents.length;
@@ -82,8 +79,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         _publishedAnnouncements = publishedAnnouncements.length;
         _totalResources = allResources.length;
         _activeUsers = 1; // For now, just the admin user
-        _recentEvents = recentEvents;
-        _recentAnnouncements = recentAnnouncements;
         _isLoadingStats = false;
       });
     } catch (e) {

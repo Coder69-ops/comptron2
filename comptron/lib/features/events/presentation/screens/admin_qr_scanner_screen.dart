@@ -77,7 +77,7 @@ class _AdminQRScannerScreenState extends State<AdminQRScannerScreen>
         return;
       }
 
-      if (registration.eventId != widget.event.id.toString()) {
+      if (registration.eventId != widget.event.id) {
         _showError('QR code is for a different event');
         return;
       }
