@@ -89,7 +89,7 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
       final nwuEmail = _emailController.text.trim();
       if (!Registration.isValidNwuEmail(nwuEmail)) {
         throw Exception(
-          'Please enter a valid @nwu.ac.bd email in format: ID(20232002010)@nwu.ac.bd',
+          'Please enter a valid @nwu.ac.bd email in format: 20232002010@nwu.ac.bd',
         );
       }
 
@@ -565,7 +565,7 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                           controller: _emailController,
                           decoration: const InputDecoration(
                             labelText: 'University Email *',
-                            hintText: 'ID(20232002010)@nwu.ac.bd',
+                            hintText: '20232002010@nwu.ac.bd',
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(Icons.school),
                           ),
@@ -575,7 +575,7 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                               return 'University email is required';
                             }
                             if (!Registration.isValidNwuEmail(value.trim())) {
-                              return 'Please enter valid @nwu.ac.bd email\nFormat: ID(20232002010)@nwu.ac.bd';
+                              return 'Please enter valid @nwu.ac.bd email\nFormat: 20232002010@nwu.ac.bd';
                             }
                             return null;
                           },

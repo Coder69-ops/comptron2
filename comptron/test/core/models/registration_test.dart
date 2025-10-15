@@ -5,9 +5,9 @@ void main() {
   group('Registration Email Validation', () {
     test('should validate correct @nwu.ac.bd email format', () {
       const validEmails = [
-        'ID(20232002010)@nwu.ac.bd',
-        'ID(20231234567)@nwu.ac.bd',
-        'ID(20240001001)@nwu.ac.bd',
+        '20232002010@nwu.ac.bd',
+        '20231234567@nwu.ac.bd',
+        '20240001001@nwu.ac.bd',
       ];
 
       for (final email in validEmails) {
@@ -21,12 +21,12 @@ void main() {
 
     test('should reject invalid @nwu.ac.bd email formats', () {
       const invalidEmails = [
-        'invalid@nwu.ac.bd',
-        'ID20232002010@nwu.ac.bd', // Missing parentheses
-        'ID(2023-2002-010)@nwu.ac.bd', // Contains hyphens
-        'ID(abc)@nwu.ac.bd', // Contains letters
-        'ID(20232002010)@gmail.com', // Wrong domain
-        'ID(20232002010)@nwu.edu.bd', // Wrong domain
+        'invalid@nwu.ac.bd', // Non-numeric
+        'ID20232002010@nwu.ac.bd', // Contains letters
+        '2023-2002-010@nwu.ac.bd', // Contains hyphens
+        'abc@nwu.ac.bd', // Contains letters
+        '20232002010@gmail.com', // Wrong domain
+        '20232002010@nwu.edu.bd', // Wrong domain
       ];
 
       for (final email in invalidEmails) {
@@ -40,9 +40,9 @@ void main() {
 
     test('should extract student ID correctly', () {
       const testCases = {
-        'ID(20232002010)@nwu.ac.bd': '20232002010',
-        'ID(20241234567)@nwu.ac.bd': '20241234567',
-        'ID(20200001001)@nwu.ac.bd': '20200001001',
+        '20232002010@nwu.ac.bd': '20232002010',
+        '20241234567@nwu.ac.bd': '20241234567',
+        '20200001001@nwu.ac.bd': '20200001001',
       };
 
       testCases.forEach((email, expectedId) {
@@ -59,7 +59,7 @@ void main() {
       const invalidEmails = [
         'invalid@nwu.ac.bd',
         'notanemail',
-        'ID20232002010@nwu.ac.bd',
+        'abc123@nwu.ac.bd',
         'test@gmail.com',
       ];
 

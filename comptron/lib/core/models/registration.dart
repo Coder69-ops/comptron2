@@ -186,11 +186,11 @@ class Registration {
     if (email.contains('@nwu.ac.bd')) {
       final emailParts = email.split('@');
       if (emailParts.isNotEmpty) {
-        // Extract ID from format like "ID(20232002010)@nwu.ac.bd"
+        // Extract ID from format like "20232002010@nwu.ac.bd"
         final localPart = emailParts[0];
-        final idMatch = RegExp(r'ID\((\d+)\)').firstMatch(localPart);
-        if (idMatch != null) {
-          return idMatch.group(1) ?? '';
+        // Check if local part is all digits (student ID)
+        if (RegExp(r'^\d+$').hasMatch(localPart)) {
+          return localPart;
         }
       }
     }
@@ -202,7 +202,7 @@ class Registration {
     if (!email.endsWith('@nwu.ac.bd')) return false;
 
     final localPart = email.split('@')[0];
-    // Check if email follows ID(numbers) format
-    return RegExp(r'^ID\(\d+\)$').hasMatch(localPart);
+    // Check if email follows student_id@nwu.ac.bd format (numbers only)
+    return RegExp(r'^\d+$').hasMatch(localPart);
   }
 }
