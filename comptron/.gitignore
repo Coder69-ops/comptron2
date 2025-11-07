@@ -50,6 +50,8 @@ app.*.map.json
 .env.production
 .env.staging
 
+# Keep .env.example for reference
+
 # Firebase configuration files
 **/android/app/google-services.json
 **/ios/Runner/GoogleService-Info.plist
