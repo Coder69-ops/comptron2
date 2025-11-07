@@ -60,7 +60,6 @@ class EventDetailsScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(16),
-
                           ),
                           child: Icon(
                             _getEventIcon(),
@@ -88,7 +87,7 @@ class EventDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Content
           SliverToBoxAdapter(
             child: Container(
@@ -106,10 +105,7 @@ class EventDetailsScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white,
-                            Colors.blue.withOpacity(0.05),
-                          ],
+                          colors: [Colors.white, Colors.blue.withOpacity(0.05)],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
@@ -126,7 +122,10 @@ class EventDetailsScreen extends StatelessWidget {
                           Row(
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [Colors.blue, Colors.purple],
@@ -145,7 +144,10 @@ class EventDetailsScreen extends StatelessWidget {
                               Spacer(),
                               if (event.isFull)
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [Colors.red, Colors.orange],
@@ -169,7 +171,9 @@ class EventDetailsScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).textTheme.headlineMedium?.color,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.headlineMedium?.color,
                               height: 1.2,
                             ),
                           ),
@@ -178,7 +182,9 @@ class EventDetailsScreen extends StatelessWidget {
                             event.description,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge?.color?.withOpacity(0.8),
                               height: 1.6,
                             ),
                           ),
@@ -242,11 +248,11 @@ class EventDetailsScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EventRegistrationScreen(event: event),
+                              builder: (context) =>
+                                  EventRegistrationScreen(event: event),
                             ),
                           );
                         },
-
                 ),
               ),
             ],
@@ -263,10 +269,7 @@ class EventDetailsScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Colors.green.withOpacity(0.05),
-          ],
+          colors: [Colors.white, Colors.green.withOpacity(0.05)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -341,7 +344,13 @@ class EventDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(BuildContext context, String title, String value, IconData icon, List<Color> colors) {
+  Widget _buildInfoCard(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+    List<Color> colors,
+  ) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -382,10 +391,7 @@ class EventDetailsScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Colors.purple.withOpacity(0.05),
-          ],
+          colors: [Colors.white, Colors.purple.withOpacity(0.05)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -453,10 +459,7 @@ class EventDetailsScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Colors.orange.withOpacity(0.05),
-          ],
+          colors: [Colors.white, Colors.orange.withOpacity(0.05)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -523,7 +526,13 @@ class EventDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCard(BuildContext context, String title, IconData icon, List<Color> colors, VoidCallback onTap) {
+  Widget _buildActionCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    List<Color> colors,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
