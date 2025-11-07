@@ -46,6 +46,152 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
     super.dispose();
   }
 
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: Theme.of(context).primaryColor),
+              const SizedBox(width: 6),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(
+                    context,
+                  ).textTheme.labelMedium?.color?.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    final day = dateTime.day;
+    final month = months[dateTime.month - 1];
+    final year = dateTime.year;
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+
+    return '$day $month $year\n$hour:$minute';
+  }
+
+  Widget _buildFormField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+    int maxLines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$label *',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).textTheme.labelLarge?.color,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: Icon(
+              icon,
+              color: Theme.of(context).iconTheme.color?.withOpacity(0.6),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).dividerColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).dividerColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Theme.of(context).primaryColor,
+                width: 2,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.error,
+                width: 2,
+              ),
+            ),
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.1),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
   Future<void> _checkExistingRegistration() async {
     try {
       final authService = await AuthService.getInstance();
@@ -252,100 +398,230 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Event Registration')),
-        body: const Center(child: CircularProgressIndicator()),
+        appBar: AppBar(
+          title: const Text(
+            'Event Registration',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text(
+                'Loading event details...',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Event Registration')),
+      appBar: AppBar(
+        title: const Text(
+          'Event Registration',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: _checkExistingRegistration,
+            tooltip: 'Refresh',
+          ),
+        ],
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Event Information Card
-            Card(
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Theme.of(context).dividerColor.withOpacity(0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Event Title
                     Text(
                       widget.event.title,
                       style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
+
+                    // Event Details in Cards
                     Row(
                       children: [
-                        Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.event.startDate.day}/${widget.event.startDate.month}/${widget.event.startDate.year} at ${widget.event.startDate.hour.toString().padLeft(2, '0')}:${widget.event.startDate.minute.toString().padLeft(2, '0')}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: 16,
-                          color: Colors.grey[600],
-                        ),
-                        const SizedBox(width: 4),
                         Expanded(
-                          child: Text(
-                            widget.event.location,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          child: _buildInfoCard(
+                            icon: Icons.schedule_rounded,
+                            title: 'Date & Time',
+                            subtitle: _formatDateTime(widget.event.startDate),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildInfoCard(
+                            icon: Icons.location_on_rounded,
+                            title: 'Location',
+                            subtitle: widget.event.location.isNotEmpty
+                                ? widget.event.location
+                                : 'To be announced',
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
 
-                    // Capacity Information
-                    Row(
-                      children: [
-                        Icon(Icons.people, size: 16, color: Colors.grey[600]),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.event.registeredCount}/${widget.event.capacity} registered',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const Spacer(),
-                        if (widget.event.isFull)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              'FULL',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                    const SizedBox(height: 16),
+
+                    // Capacity Section
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(
+                              context,
+                            ).shadowColor.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.people_rounded,
+                                    size: 20,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Registration Status',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                ],
                               ),
+                              if (widget.event.isFull)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade100,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    'FULL',
+                                    style: TextStyle(
+                                      color: Colors.red.shade700,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${widget.event.registeredCount} registered',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color
+                                          ?.withOpacity(0.7),
+                                    ),
+                              ),
+                              Text(
+                                '${widget.event.capacity - widget.event.registeredCount} spots left',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: widget.event.isFull
+                                          ? Colors.red
+                                          : Colors.green.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: LinearProgressIndicator(
+                              value: widget.event.capacity > 0
+                                  ? widget.event.registeredCount /
+                                        widget.event.capacity
+                                  : 0,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).dividerColor.withOpacity(0.3),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                widget.event.isFull
+                                    ? Colors.red
+                                    : Theme.of(context).primaryColor,
+                              ),
+                              minHeight: 8,
                             ),
                           ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: widget.event.capacity > 0
-                          ? widget.event.registeredCount / widget.event.capacity
-                          : 0,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        widget.event.isFull ? Colors.red : Colors.green,
+                        ],
                       ),
                     ),
                   ],
@@ -358,49 +634,114 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
             // Registration Status or Form
             if (_existingRegistration != null) ...[
               // Show existing registration status
-              Card(
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _getStatusColor(
+                        _existingRegistration!.status,
+                      ).withOpacity(0.1),
+                      _getStatusColor(
+                        _existingRegistration!.status,
+                      ).withOpacity(0.05),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: _getStatusColor(
+                      _existingRegistration!.status,
+                    ).withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            _getStatusIcon(_existingRegistration!.status),
-                            color: _getStatusColor(
-                              _existingRegistration!.status,
-                            ),
-                            size: 32,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Registration ${_existingRegistration!.status.label}',
-                                  style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                      // Status Header
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: _getStatusColor(
+                            _existingRegistration!.status,
+                          ).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: _getStatusColor(
+                                  _existingRegistration!.status,
                                 ),
-                                Text(
-                                  _existingRegistration!.status.description,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Icon(
+                                _getStatusIcon(_existingRegistration!.status),
+                                color: Colors.white,
+                                size: 24,
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Registration ${_existingRegistration!.status.label}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: _getStatusColor(
+                                            _existingRegistration!.status,
+                                          ),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _existingRegistration!.status.description,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color
+                                              ?.withOpacity(0.7),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
 
                       const SizedBox(height: 16),
 
                       // Student Details Section
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(
+                                context,
+                              ).shadowColor.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,21 +841,58 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
               ),
             ] else ...[
               // Show registration form
-              Card(
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).shadowColor.withOpacity(0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Register for Event',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                        // Form Header
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.person_add_rounded,
+                                color: Theme.of(context).primaryColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Register for Event',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.headlineSmall?.color,
+                                  ),
+                            ),
+                          ],
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
                         if (widget.event.isFull) ...[
                           Container(
@@ -544,31 +922,28 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                         ],
 
                         // Student Information Form
-                        TextFormField(
+                        _buildFormField(
                           controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Full Name *',
-                            hintText: 'Enter your full name',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.person),
-                          ),
+                          label: 'Full Name',
+                          hint: 'Enter your full name',
+                          icon: Icons.person_outline_rounded,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'Name is required';
                             }
+                            if (value.trim().length < 2) {
+                              return 'Name must be at least 2 characters';
+                            }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        TextFormField(
+                        _buildFormField(
                           controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'University Email *',
-                            hintText: '20232002010@nwu.ac.bd',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.school),
-                          ),
+                          label: 'University Email',
+                          hint: '20232002010@nwu.ac.bd',
+                          icon: Icons.school_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -580,16 +955,13 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        TextFormField(
+                        _buildFormField(
                           controller: _personalEmailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Personal Email *',
-                            hintText: 'your.personal@gmail.com',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.email),
-                          ),
+                          label: 'Personal Email',
+                          hint: 'your.personal@gmail.com',
+                          icon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -603,40 +975,45 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        TextFormField(
+                        _buildFormField(
                           controller: _phoneController,
-                          decoration: const InputDecoration(
-                            labelText: 'Phone Number *',
-                            hintText: '+880 1234567890',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.phone),
-                          ),
+                          label: 'Phone Number',
+                          hint: '+880 1234567890',
+                          icon: Icons.phone_outlined,
                           keyboardType: TextInputType.phone,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'Phone number is required';
                             }
+                            if (!RegExp(
+                              r'^\+?[\d\s\-\(\)]{10,}$',
+                            ).hasMatch(value.trim())) {
+                              return 'Please enter a valid phone number';
+                            }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
                         Row(
                           children: [
                             Expanded(
-                              child: TextFormField(
+                              child: _buildFormField(
                                 controller: _batchController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Batch *',
-                                  hintText: '2023',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.calendar_today),
-                                ),
+                                label: 'Batch',
+                                hint: '2023',
+                                icon: Icons.calendar_today_outlined,
+                                keyboardType: TextInputType.number,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'Batch is required';
+                                  }
+                                  if (!RegExp(
+                                    r'^\d{4}$',
+                                  ).hasMatch(value.trim())) {
+                                    return 'Enter valid year (e.g., 2023)';
                                   }
                                   return null;
                                 },
@@ -644,17 +1021,17 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: TextFormField(
+                              child: _buildFormField(
                                 controller: _sectionController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Section *',
-                                  hintText: 'A',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.class_),
-                                ),
+                                label: 'Section',
+                                hint: 'A',
+                                icon: Icons.class_outlined,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'Section is required';
+                                  }
+                                  if (value.trim().length > 2) {
+                                    return 'Section should be 1-2 characters';
                                   }
                                   return null;
                                 },
@@ -662,44 +1039,155 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
                         // Additional Information (Optional)
-                        TextFormField(
-                          controller: _additionalInfoController,
-                          decoration: const InputDecoration(
-                            labelText: 'Additional Information (Optional)',
-                            hintText: 'Any special requirements or notes...',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.notes),
-                          ),
-                          maxLines: 3,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Additional Information (Optional)',
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.labelLarge?.color,
+                                  ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _additionalInfoController,
+                              maxLines: 3,
+                              decoration: InputDecoration(
+                                hintText:
+                                    'Any special requirements, dietary restrictions, or notes...',
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(bottom: 60),
+                                  child: Icon(
+                                    Icons.notes_outlined,
+                                    color: Theme.of(
+                                      context,
+                                    ).iconTheme.color?.withOpacity(0.6),
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey[300]!,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey[300]!,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[50],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 32),
 
-                        SizedBox(
+                        Container(
                           width: double.infinity,
-                          child: FilledButton.icon(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: _isRegistering
+                                ? null
+                                : LinearGradient(
+                                    colors: [
+                                      Theme.of(context).primaryColor,
+                                      Theme.of(
+                                        context,
+                                      ).primaryColor.withOpacity(0.8),
+                                    ],
+                                  ),
+                          ),
+                          child: ElevatedButton(
                             onPressed: _isRegistering
                                 ? null
                                 : _registerForEvent,
-                            icon: _isRegistering
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.app_registration),
-                            label: Text(
-                              _isRegistering
-                                  ? 'Registering...'
-                                  : widget.event.isFull
-                                  ? 'Join Waitlist'
-                                  : 'Register Now',
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isRegistering
+                                  ? Theme.of(
+                                      context,
+                                    ).disabledColor.withOpacity(0.3)
+                                  : Colors.transparent,
+                              foregroundColor: _isRegistering
+                                  ? Theme.of(context).disabledColor
+                                  : Colors.white,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
                             ),
+                            child: _isRegistering
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Registering...',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        widget.event.isFull
+                                            ? Icons.list_alt_rounded
+                                            : Icons
+                                                  .check_circle_outline_rounded,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        widget.event.isFull
+                                            ? 'Join Waitlist'
+                                            : 'Register Now',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                         ),
                       ],
@@ -712,19 +1200,43 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
             const SizedBox(height: 16),
 
             // Event Description
-            Card(
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'About This Event',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: Theme.of(context).primaryColor,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'About This Event',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Text(
                       widget.event.description,
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -763,16 +1275,21 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
             width: 120,
             child: Text(
               '$label:',
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.grey,
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
             ),
           ),
         ],

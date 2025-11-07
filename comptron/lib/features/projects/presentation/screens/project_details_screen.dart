@@ -7,10 +7,7 @@ import '../../../../core/widgets/custom_card.dart';
 class ProjectDetailsScreen extends StatelessWidget {
   final Project project;
 
-  const ProjectDetailsScreen({
-    super.key,
-    required this.project,
-  });
+  const ProjectDetailsScreen({super.key, required this.project});
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
@@ -84,9 +81,12 @@ class ProjectDetailsScreen extends StatelessWidget {
                             project.authorName.isNotEmpty
                                 ? project.authorName[0].toUpperCase()
                                 : '?',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -96,15 +96,17 @@ class ProjectDetailsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 project.authorName,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 'Submitted on ${_formatDate(project.createdAt)}',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
@@ -124,9 +126,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Description',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -149,9 +150,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Technologies',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
                           Wrap(
@@ -160,9 +160,13 @@ class ProjectDetailsScreen extends StatelessWidget {
                             children: project.tags.map((tag) {
                               return Chip(
                                 label: Text(tag),
-                                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
                                 labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimaryContainer,
                                 ),
                               );
                             }).toList(),
@@ -175,7 +179,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                 ],
 
                 // Links
-                if (project.githubUrl.isNotEmpty || project.liveUrl.isNotEmpty) ...[
+                if (project.githubUrl.isNotEmpty ||
+                    project.liveUrl.isNotEmpty) ...[
                   CustomCard(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -184,9 +189,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Links',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
                           if (project.githubUrl.isNotEmpty) ...[
@@ -226,9 +230,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Screenshots',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
                           SizedBox(
@@ -247,16 +250,25 @@ class ProjectDetailsScreen extends StatelessWidget {
                                       imageUrl: screenshot,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => Container(
-                                        color: Theme.of(context).colorScheme.surfaceContainer,
-                                        child: const Center(child: CircularProgressIndicator()),
-                                      ),
-                                      errorWidget: (context, url, error) => Container(
-                                        color: Theme.of(context).colorScheme.surfaceContainer,
-                                        child: Icon(
-                                          Icons.image_not_supported,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainer,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
                                         ),
                                       ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.surfaceContainer,
+                                            child: Icon(
+                                              Icons.image_not_supported,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurfaceVariant,
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 );
@@ -288,12 +300,13 @@ class ProjectDetailsScreen extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             'Status: ${project.status.name.toUpperCase()}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: project.status == ProjectStatus.pending
-                                  ? Colors.orange
-                                  : Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: project.status == ProjectStatus.pending
+                                      ? Colors.orange
+                                      : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),

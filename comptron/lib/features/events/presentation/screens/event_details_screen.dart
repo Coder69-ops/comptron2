@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/models/event.dart';
 import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/custom_card.dart';
 import 'event_registration_screen.dart';
 
 class EventDetailsScreen extends StatelessWidget {
@@ -11,108 +8,192 @@ class EventDetailsScreen extends StatelessWidget {
 
   const EventDetailsScreen({super.key, required this.event});
 
+  String _formatDateTime(DateTime dateTime) {
+    final day = dateTime.day.toString().padLeft(2, '0');
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final year = dateTime.year;
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+
+    return '$day/$month/$year at $hour:$minute';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          // Hero App Bar with Gradient
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            backgroundColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              background: event.imageUrl.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: event.imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[300],
-                        child: const Center(child: CircularProgressIndicator()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.error),
-                      ),
-                    )
-                  : Container(
-                      color: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.1),
-                      child: Icon(
-                        Icons.event,
-                        size: 64,
-                        color: Theme.of(context).primaryColor,
-                      ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.blue.withOpacity(0.8),
+                      Colors.purple.withOpacity(0.6),
+                    ],
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
                     ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          event.type.label,
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      if (event.isFull)
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
+                          padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
+                            color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(16),
+
                           ),
-                          child: const Text(
-                            'Full',
+                          child: Icon(
+                            _getEventIcon(),
+                            size: 48,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            event.title,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    event.title,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    event.description,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 24),
-                  _buildInfoSection(context),
-                  const SizedBox(height: 24),
-                  if (event.tags.isNotEmpty) _buildTagsSection(context),
-                  const SizedBox(height: 24),
-                  _buildActionButtons(context),
-                  const SizedBox(height: 100), // Space for bottom buttons
-                ],
+                ),
+              ),
+            ),
+          ),
+          
+          // Content
+          SliverToBoxAdapter(
+            child: Container(
+              transform: Matrix4.translationValues(0, -30, 0),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title Card with Status Badges
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white,
+                            Colors.blue.withOpacity(0.05),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.blue, Colors.purple],
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  event.type.label,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                              if (event.isFull)
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Colors.red, Colors.orange],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    'FULL',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            event.title,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).textTheme.headlineMedium?.color,
+                              height: 1.2,
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            event.description,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
+                              height: 1.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildInfoSection(context),
+                    const SizedBox(height: 24),
+                    if (event.tags.isNotEmpty) _buildTagsSection(context),
+                    const SizedBox(height: 24),
+                    _buildActionButtons(context),
+                    const SizedBox(height: 100), // Space for bottom buttons
+                  ],
+                ),
               ),
             ),
           ),
@@ -130,17 +211,42 @@ class EventDetailsScreen extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   text: 'Add to Calendar',
+                  onPressed: () {
+                    // TODO: Add to calendar functionality
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Calendar integration coming soon!'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
                   isOutlined: true,
-                  onPressed: () => _addToCalendar(),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
+                flex: 2,
                 child: CustomButton(
-                  text: 'Register',
+                  text: event.isFull ? 'Join Waitlist' : 'Register Now',
                   onPressed: event.isFull
-                      ? null
-                      : () => _registerForEvent(context),
+                      ? () {
+                          // TODO: Join waitlist functionality
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Waitlist feature coming soon!'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EventRegistrationScreen(event: event),
+                            ),
+                          );
+                        },
+
                 ),
               ),
             ],
@@ -151,62 +257,118 @@ class EventDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildInfoSection(BuildContext context) {
-    return CustomCard(
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.green.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoRow(
-            context,
-            Icons.calendar_today,
-            'Date',
-            _formatDate(event.startDate),
+          Text(
+            'Event Information',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).textTheme.titleLarge?.color,
+            ),
           ),
-          const Divider(),
-          _buildInfoRow(
-            context,
-            Icons.access_time,
-            'Time',
-            _formatTime(event.startDate, event.endDate),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInfoCard(
+                  context,
+                  'Date & Time',
+                  _formatDateTime(event.startDate),
+                  Icons.schedule_rounded,
+                  [Colors.blue, Colors.cyan],
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildInfoCard(
+                  context,
+                  'Location',
+                  event.location,
+                  Icons.location_on_rounded,
+                  [Colors.orange, Colors.deepOrange],
+                ),
+              ),
+            ],
           ),
-          const Divider(),
-          _buildInfoRow(context, Icons.location_on, 'Location', event.location),
-          const Divider(),
-          _buildInfoRow(
-            context,
-            Icons.people,
-            'Capacity',
-            '${event.registeredCount}/${event.capacity}',
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInfoCard(
+                  context,
+                  'Capacity',
+                  '${event.registeredCount}/${event.capacity}',
+                  Icons.people_rounded,
+                  [Colors.purple, Colors.deepPurple],
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildInfoCard(
+                  context,
+                  'Duration',
+                  '${event.endDate.difference(event.startDate).inHours}h',
+                  Icons.timer_rounded,
+                  [Colors.green, Colors.teal],
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(
-    BuildContext context,
-    IconData icon,
-    String label,
-    String value,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
+  Widget _buildInfoCard(BuildContext context, String title, String value, IconData icon, List<Color> colors) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
         children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          const SizedBox(width: 12),
+          Icon(icon, color: Colors.white, size: 24),
+          SizedBox(height: 8),
           Text(
-            label,
+            value,
             style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
+            textAlign: TextAlign.center,
           ),
-          const Spacer(),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: Theme.of(context).textTheme.bodyMedium,
+          SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.9),
+              fontSize: 12,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -214,117 +376,193 @@ class EventDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildTagsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tags',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.purple.withOpacity(0.05),
+          ],
         ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: event.tags.map((tag) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                tag,
-                style: TextStyle(color: Colors.grey[700], fontSize: 12),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: CustomButton(
-            text: 'Share Event',
-            isOutlined: true,
-            onPressed: () => _shareEvent(),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: Offset(0, 5),
           ),
-        ),
-        const SizedBox(width: 16),
-        IconButton(
-          onPressed: () => _toggleFavorite(),
-          icon: const Icon(Icons.favorite_border),
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
-
-  String _formatTime(DateTime start, DateTime end) {
-    return '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')} - ${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}';
-  }
-
-  void _addToCalendar() async {
-    // Create Google Calendar URL
-    final startDate = event.startDate
-        .toUtc()
-        .toIso8601String()
-        .replaceAll(':', '%3A')
-        .replaceAll('-', '');
-    final endDate = event.endDate
-        .toUtc()
-        .toIso8601String()
-        .replaceAll(':', '%3A')
-        .replaceAll('-', '');
-    final title = Uri.encodeComponent(event.title);
-    final description = Uri.encodeComponent(event.description);
-    final location = Uri.encodeComponent(event.location);
-
-    final calendarUrl =
-        'https://calendar.google.com/calendar/render?action=TEMPLATE&text=$title&dates=$startDate/$endDate&details=$description&location=$location';
-
-    final uri = Uri.parse(calendarUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  void _registerForEvent(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EventRegistrationScreen(event: event),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.local_offer_rounded,
+                color: Theme.of(context).primaryColor,
+                size: 20,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Tags',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: event.tags.map((tag) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.purple, Colors.pink],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  tag,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }
 
-  void _shareEvent() {
-    // TODO: Implement share functionality
+  Widget _buildActionButtons(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.orange.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Quick Actions',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).textTheme.titleLarge?.color,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildActionCard(
+                  context,
+                  'Share Event',
+                  Icons.share_rounded,
+                  [Colors.blue, Colors.cyan],
+                  () {
+                    // TODO: Share functionality
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Share feature coming soon!'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildActionCard(
+                  context,
+                  'Get Directions',
+                  Icons.directions_rounded,
+                  [Colors.green, Colors.teal],
+                  () {
+                    // TODO: Directions functionality
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Maps integration coming soon!'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  void _toggleFavorite() {
-    // TODO: Implement favorite toggle
+  Widget _buildActionCard(BuildContext context, String title, IconData icon, List<Color> colors, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: colors),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getEventIcon() {
+    switch (event.type) {
+      case EventType.workshop:
+        return Icons.build_rounded;
+      case EventType.seminar:
+        return Icons.school_rounded;
+      case EventType.conference:
+        return Icons.emoji_events_rounded;
+      case EventType.meetup:
+        return Icons.people_rounded;
+      case EventType.other:
+        return Icons.event_rounded;
+    }
   }
 }

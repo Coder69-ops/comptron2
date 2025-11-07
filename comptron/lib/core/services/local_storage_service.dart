@@ -8,7 +8,7 @@ import '../models/notification.dart';
 
 class LocalStorageService {
   static LocalStorageService? _instance;
-  
+
   late Box _authBox;
   late Box _eventsBox;
   late Box _announcementsBox;
@@ -28,7 +28,7 @@ class LocalStorageService {
 
   Future<void> _initialize() async {
     await Hive.initFlutter();
-    
+
     _authBox = await Hive.openBox(AppConfig.authBox);
     _eventsBox = await Hive.openBox(AppConfig.eventsBox);
     _announcementsBox = await Hive.openBox(AppConfig.announcementsBox);
@@ -69,27 +69,34 @@ class LocalStorageService {
     await saveUser(user); // Also save as current user
   }
 
-  Future<User?> getUserByEmailAndPassword(String email, String hashedPassword) async {
+  Future<User?> getUserByEmailAndPassword(
+    String email,
+    String hashedPassword,
+  ) async {
     final userData = _userBox.get('user_$email');
     if (userData == null) return null;
-    
+
     final userMap = Map<String, dynamic>.from(userData);
     final storedPasswordHash = userMap['passwordHash'];
-    
+
     if (storedPasswordHash == hashedPassword) {
-      userMap.remove('passwordHash'); // Remove password hash before creating User object
+      userMap.remove(
+        'passwordHash',
+      ); // Remove password hash before creating User object
       return User.fromJson(userMap);
     }
-    
+
     return null;
   }
 
   User? getUserByEmail(String email) {
     final userData = _userBox.get('user_$email');
     if (userData == null) return null;
-    
+
     final userMap = Map<String, dynamic>.from(userData);
-    userMap.remove('passwordHash'); // Remove password hash before creating User object
+    userMap.remove(
+      'passwordHash',
+    ); // Remove password hash before creating User object
     return User.fromJson(userMap);
   }
 
@@ -113,7 +120,10 @@ class LocalStorageService {
   }
 
   List<Announcement> getAnnouncements() {
-    final announcementsData = _announcementsBox.get('announcements', defaultValue: []);
+    final announcementsData = _announcementsBox.get(
+      'announcements',
+      defaultValue: [],
+    );
     return (announcementsData as List)
         .map((a) => Announcement.fromJson(Map<String, dynamic>.from(a)))
         .toList();

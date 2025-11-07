@@ -78,13 +78,15 @@ class Event {
       tags: (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
       capacity: json['capacity'] as int,
       registeredCount: json['registeredCount'] as int? ?? 0,
-      registeredUsers: (json['registeredUsers'] as List?)
-          ?.map((e) => e as ObjectId)
-          .toList() ??
+      registeredUsers:
+          (json['registeredUsers'] as List?)
+              ?.map((e) => e as ObjectId)
+              .toList() ??
           [],
-      waitlistedUsers: (json['waitlistedUsers'] as List?)
-          ?.map((e) => e as ObjectId)
-          .toList() ??
+      waitlistedUsers:
+          (json['waitlistedUsers'] as List?)
+              ?.map((e) => e as ObjectId)
+              .toList() ??
           [],
       isPublished: json['isPublished'] as bool? ?? false,
       createdBy: json['createdBy'] as ObjectId,
@@ -117,7 +119,7 @@ class Event {
 
   bool get isFull => registeredCount >= capacity;
   bool get hasWaitlist => waitlistedUsers.isNotEmpty;
-  
+
   bool isRegistered(ObjectId userId) {
     return registeredUsers.contains(userId);
   }

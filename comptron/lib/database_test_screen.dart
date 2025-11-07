@@ -45,12 +45,16 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         await mongoService.createUser(testUser);
         _addResult('✅ Test user created successfully');
       } catch (e) {
-        _addResult('⚠️ User creation skipped (likely already exists): ${e.toString()}');
+        _addResult(
+          '⚠️ User creation skipped (likely already exists): ${e.toString()}',
+        );
       }
 
       // Test 2: Retrieve user by email
       _addResult('\n🧪 Test 2: Retrieving user by email...');
-      final retrievedUser = await mongoService.getUserByEmail('test@university.edu');
+      final retrievedUser = await mongoService.getUserByEmail(
+        'test@university.edu',
+      );
       if (retrievedUser != null) {
         _addResult('✅ User retrieved successfully: ${retrievedUser.name}');
       } else {
@@ -93,13 +97,14 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
 
       if (upcomingEvents.isNotEmpty) {
         for (final event in upcomingEvents.take(3)) {
-          _addResult('   📅 ${event.title} - ${event.startDate.toString().split(' ')[0]}');
+          _addResult(
+            '   📅 ${event.title} - ${event.startDate.toString().split(' ')[0]}',
+          );
         }
       }
 
       _addResult('\n🎉 All database tests completed successfully!');
       _addResult('✅ MongoDB Atlas connection is working properly');
-
     } catch (e) {
       _addResult('\n❌ Database test failed: ${e.toString()}');
       _addResult('⚠️ Please check your MongoDB connection string and network');
@@ -171,7 +176,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Event(
           id: ObjectId(),
           title: 'Flutter Workshop 2024',
-          description: 'Join us for an intensive Flutter development workshop covering the latest features and best practices. Perfect for beginners and intermediate developers.',
+          description:
+              'Join us for an intensive Flutter development workshop covering the latest features and best practices. Perfect for beginners and intermediate developers.',
           location: 'Computer Lab A',
           startDate: DateTime.now().add(const Duration(days: 7)),
           endDate: DateTime.now().add(const Duration(days: 7, hours: 3)),
@@ -189,7 +195,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Event(
           id: ObjectId(),
           title: 'AI & Machine Learning Seminar',
-          description: 'Explore the latest trends in artificial intelligence and machine learning. Industry experts will share insights on current applications and future possibilities.',
+          description:
+              'Explore the latest trends in artificial intelligence and machine learning. Industry experts will share insights on current applications and future possibilities.',
           location: 'Main Auditorium',
           startDate: DateTime.now().add(const Duration(days: 14)),
           endDate: DateTime.now().add(const Duration(days: 14, hours: 2)),
@@ -207,7 +214,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Event(
           id: ObjectId(),
           title: 'Tech Career Fair',
-          description: 'Meet with top tech companies and explore career opportunities. Networking session followed by company presentations.',
+          description:
+              'Meet with top tech companies and explore career opportunities. Networking session followed by company presentations.',
           location: 'Student Center',
           startDate: DateTime.now().add(const Duration(days: 28)),
           endDate: DateTime.now().add(const Duration(days: 28, hours: 6)),
@@ -229,7 +237,9 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
           await mongoService.createEvent(event);
           _addResult('   ✅ Created event: ${event.title}');
         } catch (e) {
-          _addResult('   ⚠️ Event "${event.title}" skipped: ${e.toString().split('\n')[0]}');
+          _addResult(
+            '   ⚠️ Event "${event.title}" skipped: ${e.toString().split('\n')[0]}',
+          );
         }
       }
 
@@ -239,7 +249,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Announcement(
           id: ObjectId(),
           title: 'Registration Open: Flutter Workshop',
-          content: 'Early bird registration is now open for the Flutter Workshop 2024. Limited seats available!',
+          content:
+              'Early bird registration is now open for the Flutter Workshop 2024. Limited seats available!',
           createdBy: adminUser.id,
           eventId: sampleEvents[0].id,
           isPublished: true,
@@ -249,7 +260,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Announcement(
           id: ObjectId(),
           title: 'New Study Resources Available',
-          content: 'We\'ve added new programming resources and tutorials to help you prepare for upcoming competitions.',
+          content:
+              'We\'ve added new programming resources and tutorials to help you prepare for upcoming competitions.',
           createdBy: adminUser.id,
           isPublished: true,
           createdAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -258,7 +270,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Announcement(
           id: ObjectId(),
           title: 'Club Meeting Schedule',
-          content: 'Regular club meetings will be held every Friday at 4 PM in Room 205. All members are welcome!',
+          content:
+              'Regular club meetings will be held every Friday at 4 PM in Room 205. All members are welcome!',
           createdBy: adminUser.id,
           isPublished: true,
           createdAt: DateTime.now().subtract(const Duration(hours: 12)),
@@ -281,7 +294,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Resource(
           id: ObjectId(),
           title: 'Flutter Documentation',
-          description: 'Official Flutter documentation with comprehensive guides and API references.',
+          description:
+              'Official Flutter documentation with comprehensive guides and API references.',
           url: 'https://flutter.dev/docs',
           type: 'link',
           tags: const ['flutter', 'documentation', 'mobile'],
@@ -293,7 +307,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Resource(
           id: ObjectId(),
           title: 'Data Structures and Algorithms',
-          description: 'Comprehensive guide covering essential data structures and algorithms for competitive programming.',
+          description:
+              'Comprehensive guide covering essential data structures and algorithms for competitive programming.',
           url: 'https://example.com/dsa-guide.pdf',
           type: 'document',
           tags: const ['algorithms', 'data structures', 'programming'],
@@ -305,7 +320,8 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         Resource(
           id: ObjectId(),
           title: 'Machine Learning Crash Course',
-          description: 'Video series covering machine learning fundamentals and practical applications.',
+          description:
+              'Video series covering machine learning fundamentals and practical applications.',
           url: 'https://example.com/ml-course',
           type: 'video',
           tags: const ['machine learning', 'ai', 'course'],
@@ -339,7 +355,6 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
 
       _addResult('\n🎉 Sample data population completed successfully!');
       _addResult('✅ You can now test the app with real data');
-
     } catch (e) {
       _addResult('\n❌ Sample data population failed: ${e.toString()}');
     }
@@ -386,21 +401,31 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
                           children: [
                             Expanded(
                               child: FilledButton.icon(
-                                onPressed: _isRunning ? null : _runDatabaseTests,
-                                icon: _isRunning 
-                                  ? const SizedBox(
-                                      width: 16, 
-                                      height: 16, 
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : const Icon(Icons.play_arrow),
-                                label: Text(_isRunning ? 'Running Tests...' : 'Run Database Tests'),
+                                onPressed: _isRunning
+                                    ? null
+                                    : _runDatabaseTests,
+                                icon: _isRunning
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.play_arrow),
+                                label: Text(
+                                  _isRunning
+                                      ? 'Running Tests...'
+                                      : 'Run Database Tests',
+                                ),
                               ),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: FilledButton.icon(
-                                onPressed: _isRunning ? null : _populateSampleData,
+                                onPressed: _isRunning
+                                    ? null
+                                    : _populateSampleData,
                                 icon: const Icon(Icons.dataset),
                                 label: const Text('Add Sample Data'),
                               ),
@@ -418,7 +443,9 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
                             );
                           },
                           icon: const Icon(Icons.login),
-                          label: const Text('Test Authentication (Offline Mode)'),
+                          label: const Text(
+                            'Test Authentication (Offline Mode)',
+                          ),
                         ),
                       ],
                     ),
@@ -441,29 +468,34 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
                       const SizedBox(height: 12),
                       Expanded(
                         child: _testResults.isEmpty
-                          ? Center(
-                              child: Text(
-                                'Click "Run Database Tests" to start testing',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ? Center(
+                                child: Text(
+                                  'Click "Run Database Tests" to start testing',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
                                 ),
-                              ),
-                            )
-                          : ListView.builder(
-                              itemCount: _testResults.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Text(
-                                    _testResults[index],
-                                    style: const TextStyle(
-                                      fontFamily: 'monospace',
-                                      fontSize: 12,
+                              )
+                            : ListView.builder(
+                                itemCount: _testResults.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 2.0,
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                    child: Text(
+                                      _testResults[index],
+                                      style: const TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                       ),
                     ],
                   ),

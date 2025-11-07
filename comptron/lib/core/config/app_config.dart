@@ -1,5 +1,6 @@
 class AppConfig {
-  static const String mongodbUri = 'mongodb+srv://oveisawesome_db_user:1rj2ogNr7hO7XUG0@cluster0.pkrk3ft.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  static const String mongodbUri =
+      'mongodb+srv://oveisawesome_db_user:1rj2ogNr7hO7XUG0@cluster0.pkrk3ft.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
   static const String databaseName = 'comptron';
 
   // Collections

@@ -27,8 +27,9 @@ class NotificationService {
     await _requestPermissions();
 
     // Initialize local notifications
-    const initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -202,8 +203,10 @@ class NotificationService {
 
   Future<void> markNotificationAsRead(String notificationId) async {
     final notifications = await getNotifications();
-    final notificationIndex = notifications.indexWhere((n) => n.id == notificationId);
-    
+    final notificationIndex = notifications.indexWhere(
+      (n) => n.id == notificationId,
+    );
+
     if (notificationIndex != -1) {
       final notification = notifications[notificationIndex];
       final updatedNotification = models.Notification(

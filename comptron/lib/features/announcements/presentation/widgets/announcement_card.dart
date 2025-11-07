@@ -6,11 +6,7 @@ class AnnouncementCard extends StatelessWidget {
   final Announcement announcement;
   final VoidCallback? onTap;
 
-  const AnnouncementCard({
-    super.key,
-    required this.announcement,
-    this.onTap,
-  });
+  const AnnouncementCard({super.key, required this.announcement, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +20,9 @@ class AnnouncementCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getPriorityColor(announcement.priority).withValues(alpha: 0.1),
+                  color: _getPriorityColor(
+                    announcement.priority,
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -39,26 +37,23 @@ class AnnouncementCard extends StatelessWidget {
               const Spacer(),
               Text(
                 _formatDate(announcement.createdAt),
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
             ],
           ),
           const SizedBox(height: 12),
           Text(
             announcement.title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
             announcement.content,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[600],
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),

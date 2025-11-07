@@ -48,9 +48,9 @@ class _EventFiltersState extends State<EventFilters> {
             children: [
               Text(
                 'Filters',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               TextButton(
                 onPressed: () {
@@ -64,9 +64,9 @@ class _EventFiltersState extends State<EventFilters> {
           const SizedBox(height: 16),
           Text(
             'Event Type',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -93,28 +93,30 @@ class _EventFiltersState extends State<EventFilters> {
           const SizedBox(height: 16),
           Text(
             'Tags',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
-            children: _availableTags.map(
-              (tag) => FilterChip(
-                label: Text(tag),
-                selected: widget.selectedTags.contains(tag),
-                onSelected: (selected) {
-                  final newTags = List<String>.from(widget.selectedTags);
-                  if (selected) {
-                    newTags.add(tag);
-                  } else {
-                    newTags.remove(tag);
-                  }
-                  widget.onTagsChanged(newTags);
-                },
-              ),
-            ).toList(),
+            children: _availableTags
+                .map(
+                  (tag) => FilterChip(
+                    label: Text(tag),
+                    selected: widget.selectedTags.contains(tag),
+                    onSelected: (selected) {
+                      final newTags = List<String>.from(widget.selectedTags);
+                      if (selected) {
+                        newTags.add(tag);
+                      } else {
+                        newTags.remove(tag);
+                      }
+                      widget.onTagsChanged(newTags);
+                    },
+                  ),
+                )
+                .toList(),
           ),
           const SizedBox(height: 16),
         ],

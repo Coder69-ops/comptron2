@@ -71,24 +71,24 @@ class Project {
       tags: List<String>.from(json['tags'] ?? []),
       authorName: json['authorName'] ?? '',
       authorEmail: json['authorEmail'] ?? '',
-      authorId: json['authorId'] is String 
-          ? ObjectId.fromHexString(json['authorId']) 
+      authorId: json['authorId'] is String
+          ? ObjectId.fromHexString(json['authorId'])
           : json['authorId'] ?? ObjectId(),
       status: ProjectStatus.values.firstWhere(
         (e) => e.toString() == 'ProjectStatus.${json['status']}',
         orElse: () => ProjectStatus.pending,
       ),
       rejectionReason: json['rejectionReason'],
-      createdAt: json['createdAt'] is String 
+      createdAt: json['createdAt'] is String
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
-      updatedAt: json['updatedAt'] is String 
+      updatedAt: json['updatedAt'] is String
           ? DateTime.parse(json['updatedAt'])
           : DateTime.now(),
-      approvedBy: json['approvedBy'] is String 
+      approvedBy: json['approvedBy'] is String
           ? ObjectId.fromHexString(json['approvedBy'])
           : json['approvedBy'],
-      approvedAt: json['approvedAt'] is String 
+      approvedAt: json['approvedAt'] is String
           ? DateTime.parse(json['approvedAt'])
           : null,
     );
